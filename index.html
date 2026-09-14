@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Protected PDF</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: Arial, sans-serif;
+      background: #0f1117;
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .lock-screen {
+      width: min(92%, 420px);
+      padding: 35px 25px;
+      background: #181b23;
+      border: 1px solid #303542;
+      border-radius: 18px;
+      text-align: center;
+      box-shadow: 0 20px 60px rgba(0,0,0,.45);
+    }
+
+    .lock-icon {
+      font-size: 55px;
+      margin-bottom: 15px;
+    }
+
+    h1 {
+      margin: 0 0 10px;
+      font-size: 26px;
+    }
+
+    p {
+      color: #aeb4c2;
+      margin-bottom: 25px;
+    }
+
+    input {
+      width: 100%;
+      padding: 15px;
+      border: 1px solid #3b4150;
+      border-radius: 10px;
+      background: #101218;
+      color: white;
+      font-size: 17px;
+      outline: none;
+      text-align: center;
+    }
+
+    input:focus {
+      border-color: #6c7cff;
+    }
+
+    button {
+      width: 100%;
+      margin-top: 15px;
+      padding: 15px;
+      border: 0;
+      border-radius: 10px;
+      background: #5865f2;
+      color: white;
+      font-size: 17px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background: #4752c4;
+    }
+
+    .error {
+      height: 22px;
+      margin-top: 12px;
+      color: #ff6b6b;
+      font-size: 14px;
+    }
+
+    .pdf-screen {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: #111;
+    }
+
+    .topbar {
+      height: 58px;
+      background: #181b23;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 12px;
+      border-bottom: 1px solid #303542;
+    }
+
+    .topbar span {
+      font-weight: bold;
+    }
+
+    .close-btn {
+      width: auto;
+      margin: 0;
+      padding: 9px 15px;
+      background: #303542;
+      font-size: 14px;
+    }
+
+    iframe {
+      width: 100%;
+      height: calc(100vh - 58px);
+      border: 0;
+      background: white;
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- PASSWORD SCREEN -->
+  <div class="lock-screen" id="lockScreen">
+
+    <div class="lock-icon">🔐</div>
+
+    <h1>Protected Document</h1>
+
+    <p>Enter the password to view this PDF.</p>
+
+    <input
+      id="password"
+      type="password"
+      placeholder="Enter password"
+      autocomplete="off"
+    >
+
+    <button onclick="unlockPDF()">Unlock PDF</button>
+
+    <div class="error" id="error"></div>
+
+  </div>
+
+
+  <!-- PDF VIEWER -->
+  <div class="pdf-screen" id="pdfScreen">
+
+    <div class="topbar">
+      <span>Protected PDF</span>
+
+      <button class="close-btn" onclick="lockPDF()">
+        🔒 Lock
+      </button>
+    </div>
+
+    <iframe
+      id="pdfViewer"
+      src=""
+      title="Protected PDF">
+    </iframe>
+
+  </div>
+
+
+  <script>
+    /*
+      IMPORTANT:
+      Replace YOUR_PASSWORD_HERE with your password.
+      
+      Example:
+      const PASSWORD = "your-password";
+    */
+
+    const PASSWORD = "01125532553";
+
+    const lockScreen = document.getElementById("lockScreen");
+    const pdfScreen = document.getElementById("pdfScreen");
+    const passwordInput = document.getElementById("password");
+    const error = document.getElementById("error");
+    const pdfViewer = document.getElementById("pdfViewer");
+
+    function unlockPDF() {
+
+      if (passwordInput.value === PASSWORD) {
+
+        error.textContent = "";
+
+        lockScreen.style.display = "none";
+        pdfScreen.style.display = "block";
+
+        // Load PDF only after correct password
+        pdfViewer.src = "w.pdf";
+
+        passwordInput.value = "";
+
+      } else {
+
+        error.textContent = "Incorrect password.";
+
+        passwordInput.value = "";
+        passwordInput.focus();
+      }
+    }
+
+
+    function lockPDF() {
+
+      pdfViewer.src = "";
+
+      pdfScreen.style.display = "none";
+      lockScreen.style.display = "block";
+
+      passwordInput.value = "";
+      passwordInput.focus();
+    }
+
+
+    // Press Enter to unlock
+    passwordInput.addEventListener("keydown", function(event) {
+
+      if (event.key === "Enter") {
+        unlockPDF();
+      }
+
+    });
+  </script>
+
+</body>
+</html>
